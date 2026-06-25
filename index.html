@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="State-of-the-art EverQuest II Guild Roster, DKP, and Raid Planner Website with live Census API synchronization.">
+  <title>CAB DKP | EverQuest II Guild Manager</title>
+  
+  <!-- CSS Stylesheet link -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Toast Notifications Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- App Wrapper Layout -->
+  <div id="app-container">
+    
+    <!-- Sidebar Navigation -->
+    <aside>
+      <div class="brand-section">
+        <div class="brand-logo">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" style="margin-right: 0.25rem;">
+            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+            <polyline points="2 17 12 22 22 17"></polyline>
+            <polyline points="2 12 12 17 22 12"></polyline>
+          </svg>
+          <span>CAB DKP</span>
+        </div>
+      </div>
+      
+      <ul class="nav-menu">
+        <li class="nav-item active" data-view="dashboard">
+          <button>
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1"></rect><rect x="14" y="3" width="7" height="5" rx="1"></rect><rect x="14" y="12" width="7" height="9" rx="1"></rect><rect x="3" y="16" width="7" height="5" rx="1"></rect></svg>
+            <span>Dashboard</span>
+          </button>
+        </li>
+        <li class="nav-item" data-view="roster">
+          <button>
+            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            <span>Roster Directory</span>
+          </button>
+        </li>
+        <li class="nav-item" data-view="planner">
+          <button>
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line><line x1="15" y1="3" x2="15" y2="21"></line><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line></svg>
+            <span>Raid Team Planner</span>
+          </button>
+        </li>
+        <li class="nav-item" data-view="attendance">
+          <button>
+            <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+            <span>Attendance</span>
+          </button>
+        </li>
+        <li class="nav-item" data-view="loot">
+          <button>
+            <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+            <span>Loot & DKP</span>
+          </button>
+        </li>
+        <li class="nav-item" data-view="import">
+          <button>
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            <span>Import Sheet</span>
+          </button>
+        </li>
+        <li class="nav-item" data-view="settings">
+          <button>
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            <span>Config & Backups</span>
+          </button>
+        </li>
+      </ul>
+      
+      <div class="sidebar-footer">
+        <span><span class="status-dot"></span> Census API Status</span>
+        <span style="font-size:0.7rem; color:var(--text-muted);">Server: Wuoshi • Service ID: s:sukiecrisp</span>
+      </div>
+    </aside>
+    
+    <!-- Main Content Area -->
+    <main>
+      
+      <!-- ==========================================
+           DASHBOARD VIEW
+           ========================================== -->
+      <section id="view-dashboard" class="app-view active-view">
+        <header>
+          <div class="header-title">
+            <h1>CAB DKP Dashboard</h1>
+            <p>Overview stats for the Guild Roster and Raid Availability</p>
+          </div>
+          <div class="header-actions">
+            <button class="btn btn-primary" id="btn-sync-all-dash">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="margin-right:0.25rem;">
+                <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
+              </svg>
+              Bulk Census Sync
+            </button>
+          </div>
+        </header>
+        
+        <!-- Alerts and Action Triggers -->
+        <div id="dashboard-alerts"></div>
+        
+        <!-- Stats Row -->
+        <div class="grid-cols-4">
+          <div class="stat-card">
+            <div class="stat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+            </div>
+            <div class="stat-details">
+              <h3>Unique Players</h3>
+              <p id="stat-total-players">0</p>
+              <div class="stat-desc">Main player accounts</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="color: var(--accent-secondary); background: rgba(139, 92, 246, 0.1);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            </div>
+            <div class="stat-details">
+              <h3>Total Characters</h3>
+              <p id="stat-total-chars">0</p>
+              <div class="stat-desc">Mains & linked alts</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="color: var(--accent-warning); background: rgba(245, 158, 11, 0.1);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+            </div>
+            <div class="stat-details">
+              <h3>Average DKP</h3>
+              <p id="stat-avg-dkp">0</p>
+              <div class="stat-desc">Per-player currency pool</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="color: var(--accent-success); background: rgba(16, 185, 129, 0.1);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            </div>
+            <div class="stat-details">
+              <h3>Census Synced</h3>
+              <p id="stat-census-sync">0/0</p>
+              <div class="stat-desc">Live matched characters</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Double Column Dash Layout -->
+        <div class="grid-cols-2">
+          <!-- Raid Schedule Roster Breakdown -->
+          <div class="panel">
+            <div class="panel-header">
+              <h2 class="panel-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                Raid Team Assignments
+              </h2>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.02); padding: 0.75rem 1rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.03);">
+                <span style="font-weight:600; color:var(--text-main);">Mon/Tues Raid Team</span>
+                <span class="badge" style="background: rgba(14, 165, 233, 0.15); color: var(--accent-primary); border: 1px solid rgba(14, 165, 233, 0.2);" id="team-mon-tues-count">0</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.02); padding: 0.75rem 1rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.03);">
+                <span style="font-weight:600; color:var(--text-main);">Wed/Thu Raid Team</span>
+                <span class="badge" style="background: rgba(139, 92, 246, 0.15); color: var(--accent-secondary); border: 1px solid rgba(139, 92, 246, 0.2);" id="team-wed-thu-count">0</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.02); padding: 0.75rem 1rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.03);">
+                <span style="font-weight:600; color:var(--text-muted);">Backup Raider Roster</span>
+                <span class="badge" style="background: rgba(245, 158, 11, 0.15); color: var(--accent-warning); border: 1px solid rgba(245, 158, 11, 0.2);" id="team-backup-count">0</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.02); padding: 0.75rem 1rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.03);">
+                <span style="font-weight:500; color:var(--text-dim);">Unassigned Players</span>
+                <span class="badge" style="background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid rgba(255,255,255,0.08);" id="team-unassigned-count">0</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Class Role Breakdown -->
+          <div class="panel">
+            <div class="panel-header">
+              <h2 class="panel-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
+                Class Role Distribution (Synced)
+              </h2>
+            </div>
+            
+            <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+              <!-- Fighters -->
+              <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+                <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
+                  <span style="font-weight:600; color: var(--color-tank);">Tanks (Fighters)</span>
+                  <span id="role-tank-val" style="font-family: monospace;">0</span>
+                </div>
+                <div style="height: 8px; background: rgba(255,255,255,0.05); border-radius: 4px; overflow: hidden;">
+                  <div id="role-tank-bar" style="height: 100%; width: 0%; background: var(--color-tank); border-radius: 4px; transition: width 0.4s ease;"></div>
+                </div>
+              </div>
+              
+              <!-- Healers -->
+              <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+                <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
+                  <span style="font-weight:600; color: var(--color-healer);">Healers (Priests)</span>
+                  <span id="role-healer-val" style="font-family: monospace;">0</span>
+                </div>
+                <div style="height: 8px; background: rgba(255,255,255,0.05); border-radius: 4px; overflow: hidden;">
+                  <div id="role-healer-bar" style="height: 100%; width: 0%; background: var(--color-healer); border-radius: 4px; transition: width 0.4s ease;"></div>
+                </div>
+              </div>
+              
+              <!-- Mages -->
+              <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+                <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
+                  <span style="font-weight:600; color: var(--color-mage);">Mages</span>
+                  <span id="role-mage-val" style="font-family: monospace;">0</span>
+                </div>
+                <div style="height: 8px; background: rgba(255,255,255,0.05); border-radius: 4px; overflow: hidden;">
+                  <div id="role-mage-bar" style="height: 100%; width: 0%; background: var(--color-mage); border-radius: 4px; transition: width 0.4s ease;"></div>
+                </div>
+              </div>
+              
+              <!-- Scouts -->
+              <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+                <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
+                  <span style="font-weight:600; color: var(--color-scout);">Scouts (DPS/Bards)</span>
+                  <span id="role-scout-val" style="font-family: monospace;">0</span>
+                </div>
+                <div style="height: 8px; background: rgba(255,255,255,0.05); border-radius: 4px; overflow: hidden;">
+                  <div id="role-scout-bar" style="height: 100%; width: 0%; background: var(--color-scout); border-radius: 4px; transition: width 0.4s ease;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           ROSTER DIRECTORY VIEW
+           ========================================== -->
+      <section id="view-roster" class="app-view">
+        <header>
+          <div class="header-title">
+            <h1>Roster Directory</h1>
+            <p>Manage all characters, view synced Census attributes, and check DKP pools</p>
+          </div>
+          <div class="header-actions">
+            <button class="btn btn-primary" id="btn-open-add-member">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="margin-right:0.25rem;">
+                <line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              Add Player Main
+            </button>
+            <button class="btn" id="btn-sync-all-roster">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="margin-right:0.25rem;">
+                <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
+              </svg>
+              Sync Census
+            </button>
+          </div>
+        </header>
+
+        <div class="panel">
+          <!-- Filtering Toolbar -->
+          <div class="filter-row">
+            <div class="search-input-wrapper">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              <input type="text" id="roster-search" class="form-control" placeholder="Search by name, class, notes...">
+            </div>
+            
+            <select id="filter-role" class="form-control form-select" style="min-width:140px;">
+              <option value="all">All Roles</option>
+              <option value="tank">Tanks</option>
+              <option value="healer">Healers</option>
+              <option value="mage">Mages</option>
+              <option value="scout">Scouts</option>
+              <option value="unassigned">Unassigned</option>
+            </select>
+            
+            <select id="filter-team" class="form-control form-select" style="min-width:160px;">
+              <option value="all">All Raid Teams</option>
+              <option value="Mon/Tues">Mon/Tues Team</option>
+              <option value="Wed/Thu">Wed/Thu Team</option>
+              <option value="Backup">Backup Team</option>
+              <option value="Unassigned">Unassigned</option>
+            </select>
+
+            <select id="filter-sync" class="form-control form-select" style="min-width:150px;">
+              <option value="all">All Sync Status</option>
+              <option value="synced">Synced with Census</option>
+              <option value="unsynced">Not Synced</option>
+            </select>
+          </div>
+
+          <!-- Table -->
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Character Name</th>
+                  <th>Class</th>
+                  <th>Level</th>
+                  <th>Raid Role</th>
+                  <th>DKP Balance</th>
+                  <th>Raid Assignment</th>
+                  <th style="width: 140px;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="roster-table-body">
+                <!-- Javascript populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           RAID TEAM PLANNER VIEW
+           ========================================== -->
+      <section id="view-planner" class="app-view">
+        <header>
+          <div class="header-title">
+            <h1>Raid Team Planner</h1>
+            <p>Drag and drop players to distribute raid compositions and audit group balance</p>
+          </div>
+        </header>
+
+        <!-- Composition Checker summary -->
+        <div class="comp-checker">
+          <div style="font-weight:700; font-size:0.85rem; text-transform:uppercase; color:var(--text-muted);">Composition Balancer:</div>
+          <div style="display:flex; gap:1.5rem;">
+            <div class="comp-metric">
+              <span class="comp-metric-label">Mon/Tues:</span>
+              <span style="color:var(--color-tank); font-weight:700;" id="mon-tues-tanks">0</span> <span style="color:var(--text-dim);">T</span>
+              <span style="color:var(--color-healer); font-weight:700;" id="mon-tues-healers">0</span> <span style="color:var(--text-dim);">H</span>
+              <span style="color:var(--color-mage); font-weight:700;" id="mon-tues-mages">0</span> <span style="color:var(--text-dim);">M</span>
+              <span style="color:var(--color-scout); font-weight:700;" id="mon-tues-scouts">0</span> <span style="color:var(--text-dim);">S</span>
+            </div>
+            <div style="border-right: 1px solid var(--border-color); height:16px;"></div>
+            <div class="comp-metric">
+              <span class="comp-metric-label">Wed/Thu:</span>
+              <span style="color:var(--color-tank); font-weight:700;" id="wed-thu-tanks">0</span> <span style="color:var(--text-dim);">T</span>
+              <span style="color:var(--color-healer); font-weight:700;" id="wed-thu-healers">0</span> <span style="color:var(--text-dim);">H</span>
+              <span style="color:var(--color-mage); font-weight:700;" id="wed-thu-mages">0</span> <span style="color:var(--text-dim);">M</span>
+              <span style="color:var(--color-scout); font-weight:700;" id="wed-thu-scouts">0</span> <span style="color:var(--text-dim);">S</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="raid-planner-grid">
+          
+          <!-- Column 1: Unassigned Pool -->
+          <div class="panel unassigned-panel">
+            <div class="panel-header" style="margin-bottom:0.75rem;">
+              <h3 class="panel-title" style="font-size:1.05rem;">
+                Unassigned Pool
+                <span class="team-count" id="unassigned-count">0</span>
+              </h3>
+            </div>
+            <div id="roster-unassigned" class="unassigned-list team-roster" data-team="Unassigned">
+              <!-- Drag and drop target items -->
+            </div>
+          </div>
+          
+          <!-- Column 2: Roster Boards -->
+          <div class="team-boards">
+            
+            <!-- Mon/Tues Board -->
+            <div class="team-column">
+              <div class="team-column-header">
+                <h3>
+                  <span class="class-dot scout" style="width:10px; height:10px;"></span>
+                  Mon/Tues Team
+                </h3>
+                <span class="team-count" id="mon-tues-count">0</span>
+              </div>
+              <div id="roster-mon-tues" class="team-roster" data-team="Mon/Tues">
+                <!-- Drop target -->
+              </div>
+            </div>
+            
+            <!-- Wed/Thu Board -->
+            <div class="team-column">
+              <div class="team-column-header">
+                <h3>
+                  <span class="class-dot mage" style="width:10px; height:10px;"></span>
+                  Wed/Thu Team
+                </h3>
+                <span class="team-count" id="wed-thu-count">0</span>
+              </div>
+              <div id="roster-wed-thu" class="team-roster" data-team="Wed/Thu">
+                <!-- Drop target -->
+              </div>
+            </div>
+            
+            <!-- Backup Board (Full Width span equivalent in flex) -->
+            <div class="team-column" style="grid-column: span 2;">
+              <div class="team-column-header">
+                <h3>
+                  <span class="class-dot healer" style="width:10px; height:10px;"></span>
+                  Backup / Bench Roster
+                </h3>
+                <span class="team-count" id="backup-count">0</span>
+              </div>
+              <div id="roster-backup" class="team-roster" data-team="Backup" style="display:grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; min-height:120px;">
+                <!-- Drop target -->
+              </div>
+            </div>
+
+          </div>
+          
+        </div>
+      </section>
+
+
+
+      <!-- ==========================================
+           ATTENDANCE VIEW
+           ========================================== -->
+      <section id="view-attendance" class="app-view">
+        <header>
+          <div class="header-title">
+            <h1>Attendance Entry</h1>
+            <p>Check off attendees and award attendance/signup DKP to the player account.</p>
+          </div>
+        </header>
+        <div class="grid-cols-2">
+          <div class="panel">
+            <form id="attendance-form" class="stack-form">
+              <div class="grid-cols-2 compact-grid">
+                <div class="form-group"><label>Raid Date</label><input id="attendance-date" type="date" class="form-control"></div>
+                <div class="form-group"><label>Team</label><select id="attendance-team-filter" class="form-control form-select"><option>Mon/Tues</option><option>Wed/Thu</option><option>Backup</option><option>All</option></select></div>
+                <div class="form-group"><label>Attendance DKP</label><input id="attendance-dkp" type="number" class="form-control" value="5"></div>
+                <div class="form-group"><label>Signup DKP</label><input id="signup-dkp" type="number" class="form-control" value="0"></div>
+              </div>
+              <div class="form-group"><label>Notes</label><input id="attendance-notes" class="form-control" placeholder="Optional raid note"></div>
+              <div id="attendance-player-list" class="check-list"></div>
+              <button class="btn btn-primary" type="submit">Save Attendance & Award DKP</button>
+            </form>
+          </div>
+          <div class="panel">
+            <div class="panel-header"><h2 class="panel-title">Recent Attendance</h2></div>
+            <div class="table-container"><table><thead><tr><th>Date</th><th>Team</th><th>Players</th><th>DKP</th><th>Names</th></tr></thead><tbody id="attendance-history"></tbody></table></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           LOOT VIEW
+           ========================================== -->
+      <section id="view-loot" class="app-view">
+        <header>
+          <div class="header-title">
+            <h1>Loot & DKP Entry</h1>
+            <p>Record auction winners and deduct DKP from the shared player balance.</p>
+          </div>
+        </header>
+        <div class="grid-cols-2">
+          <div class="panel">
+            <form id="loot-form" class="stack-form">
+              <div class="grid-cols-2 compact-grid">
+                <div class="form-group"><label>Raid Date</label><input id="loot-date" type="date" class="form-control"></div>
+                <div class="form-group"><label>Raid / Zone</label><input id="loot-raid" class="form-control" placeholder="Optional"></div>
+              </div>
+              <div class="form-group"><label>Winner</label><select id="loot-player" class="form-control form-select"></select></div>
+              <div class="form-group"><label>Item</label><input id="loot-item" class="form-control" placeholder="Item name" required></div>
+              <div class="form-group"><label>DKP Cost</label><input id="loot-cost" type="number" class="form-control" value="0" min="0"></div>
+              <div class="form-group"><label>Notes</label><input id="loot-notes" class="form-control" placeholder="Optional"></div>
+              <button class="btn btn-primary" type="submit">Save Loot & Deduct DKP</button>
+            </form>
+          </div>
+          <div class="panel">
+            <div class="panel-header"><h2 class="panel-title">Recent Loot</h2></div>
+            <div class="table-container"><table><thead><tr><th>Date</th><th>Winner</th><th>Item</th><th>Cost</th><th>Raid</th></tr></thead><tbody id="loot-history"></tbody></table></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           SPREADSHEET IMPORTER VIEW
+           ========================================== -->
+      <section id="view-import" class="app-view">
+        <header>
+          <div class="header-title">
+            <h1>Spreadsheet CSV Importer</h1>
+            <p>Parse messy data directly from Google Sheets or Excel copy-pastes</p>
+          </div>
+        </header>
+
+        <div class="panel">
+          <div class="importer-container">
+            <!-- Left Side Input -->
+            <div style="display:flex; flex-direction:column; gap:1.25rem;">
+              <div class="form-group">
+                <label>Drag & Drop CSV Roster</label>
+                <div class="drag-drop-zone" id="csv-drop-zone">
+                  <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><polyline points="9 15 12 12 15 15"></polyline></svg>
+                  <div>
+                    <strong style="color:var(--text-main); font-size:0.95rem;">Select CSV File</strong>
+                    <p style="font-size:0.8rem; color:var(--text-dim); margin-top:0.25rem;">Drag CSV file here or click to browse files</p>
+                  </div>
+                  <input type="file" id="csv-file-input" accept=".csv, .txt" style="display:none;">
+                  <button class="btn btn-sm" onclick="document.getElementById('csv-file-input').click()">Browse Files</button>
+                </div>
+              </div>
+              
+              <div style="text-align: center; color:var(--text-dim); font-size: 0.8rem; font-weight:600;">— OR PASTE PLAIN TEXT CELLS —</div>
+              
+              <div class="form-group">
+                <label>Paste Table Rows (CSV or Tab-separated)</label>
+                <textarea id="import-text-area" class="textarea-import" placeholder="Paste data here. Make sure the first line has headers like: PlayerID, Current DKP, Sorts"></textarea>
+              </div>
+              
+              <button class="btn btn-primary" id="btn-process-import" style="justify-content:center;">Process Data & Map Columns</button>
+            </div>
+            
+            <!-- Right Side Help Sheet -->
+            <div style="background: rgba(13, 17, 28, 0.2); border: 1px solid var(--border-color); border-radius: 16px; padding: 1.5rem; display:flex; flex-direction:column; gap:1rem;">
+              <h3 style="font-family:var(--font-heading); font-weight:700; font-size:1.1rem; color:var(--accent-primary);">Smart Importer Details</h3>
+              <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.5;">Our parser automatically identifies headers and links them to the core database fields. Even messy rows will be cleaned up and parsed correctly.</p>
+              
+              <div class="mapping-rows">
+                <h4 style="font-size:0.8rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-dim); margin-top:0.5rem;">Expected columns:</h4>
+                
+                <div class="mapping-field">
+                  <span class="mapping-label">PlayerID (Required)</span>
+                  <span style="font-size:0.75rem; color:var(--accent-success);">Maps to Main Character Name</span>
+                </div>
+                <div class="mapping-field">
+                  <span class="mapping-label">Current DKP</span>
+                  <span style="font-size:0.75rem; color:var(--text-muted);">Points integer</span>
+                </div>
+                <div class="mapping-field">
+                  <span class="mapping-label">Sorts</span>
+                  <span style="font-size:0.75rem; color:var(--text-muted);">Raid schedules availability list</span>
+                </div>
+                <div class="mapping-field">
+                  <span class="mapping-label">90 Day %</span>
+                  <span style="font-size:0.75rem; color:var(--text-muted);">Attendance percentage</span>
+                </div>
+              </div>
+
+              <div style="margin-top: 1rem; border-top: 1px solid var(--border-color); padding-top: 1rem;">
+                <h4 style="font-size:0.8rem; font-weight:700; text-transform:uppercase; color:var(--text-muted); margin-bottom:0.5rem;">Sample format expected:</h4>
+                <pre style="background:rgba(0,0,0,0.3); padding:0.75rem; border-radius:8px; font-size:0.7rem; font-family:monospace; color:#34d399; overflow-x:auto;">
+PlayerID,Current DKP,Sorts,90 Day %
+Belwyn,36,Mon/Tues,0.00%
+Bodhi,36,"Wed/Thu, Mon/Tues",0.00%
+Alpha,30,Wed/Thu,0.00%
+                </pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           CONFIG & BACKUPS VIEW
+           ========================================== -->
+      <section id="view-settings" class="app-view">
+        <header>
+          <div class="header-title">
+            <h1>CAB DKP Settings & Backups</h1>
+            <p>Update Service credentials, clean storage caches, and manage hard backups</p>
+          </div>
+        </header>
+
+        <div class="grid-cols-2">
+          <!-- API Keys -->
+          <div class="panel">
+            <div class="panel-header">
+              <h2 class="panel-title">Census API Setup</h2>
+            </div>
+            
+            <div style="display:flex; flex-direction:column; gap:1rem;">
+              <div class="form-group">
+                <label for="settings-service-id">Daybreak Census Service ID</label>
+                <input type="text" id="settings-service-id" class="form-control" value="sukiecrisp">
+                <span style="font-size:0.75rem; color:var(--text-dim);">Custom Service ID to bypass query rate limits (default: sukiecrisp).</span>
+              </div>
+              <div class="form-group">
+                <label for="settings-server-name">EQ2 Server / World</label>
+                <input type="text" id="settings-server-name" class="form-control" value="Wuoshi">
+                <span style="font-size:0.75rem; color:var(--text-dim);">Census lookups will only accept characters from this server. Default: Wuoshi.</span>
+              </div>
+              <button class="btn btn-primary" id="btn-save-settings" style="width:fit-content; margin-top:0.5rem;">Save Credentials</button>
+            </div>
+          </div>
+          
+          <!-- Storage Backups -->
+          <div class="panel">
+            <div class="panel-header">
+              <h2 class="panel-title">Hard Backups (JSON)</h2>
+            </div>
+            
+            <div style="display:flex; flex-direction:column; gap:1.25rem;">
+              <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.5;">To prevent browser cache loss, always export a copy of your database before closing your session. You can restore your backup instantly.</p>
+              
+              <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
+                <button class="btn btn-accent" id="btn-export-json">
+                  <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="margin-right:0.25rem;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                  Export Database (JSON)
+                </button>
+                
+                <input type="file" id="json-file-input" accept=".json" style="display:none;">
+                <button class="btn" onclick="document.getElementById('json-file-input').click()">
+                  <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="margin-right:0.25rem;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                  Restore Backup (JSON)
+                </button>
+              </div>
+              
+              <div style="margin-top: 1rem; border-top: 1px solid var(--border-color); padding-top: 1rem;">
+                <h4 style="font-size:0.8rem; font-weight:700; text-transform:uppercase; color:var(--accent-danger); margin-bottom:0.5rem;">Dangerous Operations</h4>
+                <button class="btn" id="btn-reset-seed" style="border-color: rgba(239,68,68,0.2); color: var(--accent-danger);">
+                  Reset database to default spreadsheet roster
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ==========================================
+       MODAL: PLAYER DETAILS & ALTS
+       ========================================== -->
+  <div id="modal-player-details" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modal-player-title">Manage Player</h2>
+        <button class="close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <!-- Edit Profile form fields -->
+        <div class="grid-cols-2" style="gap:0.75rem;">
+          <div class="form-group">
+            <label for="edit-player-name">Player Name (Alias)</label>
+            <input type="text" id="edit-player-name" class="form-control">
+          </div>
+          <div class="form-group">
+            <label for="edit-player-dkp">DKP Balance</label>
+            <input type="number" id="edit-player-dkp" class="form-control" min="0">
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="edit-player-team">Raid Team Assignment</label>
+          <select id="edit-player-team" class="form-control form-select">
+            <option value="Unassigned">Unassigned</option>
+            <option value="Mon/Tues">Mon/Tues Team</option>
+            <option value="Wed/Thu">Wed/Thu Team</option>
+            <option value="Backup">Backup Team</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="edit-player-notes">Roster / Contact Notes</label>
+          <textarea id="edit-player-notes" class="form-control" rows="2" placeholder="e.g. Healer main, contact on discord, alt dirge..."></textarea>
+        </div>
+
+        <!-- Sync Box for Main -->
+        <div style="background: rgba(14,165,233,0.04); border:1px solid rgba(14,165,233,0.1); border-radius:12px; padding:0.85rem; display:flex;" id="main-char-box">
+          <!-- Javascript populated main character box -->
+        </div>
+
+        <!-- Alt Characters List -->
+        <div class="form-group">
+          <label>Linked Alt Characters</label>
+          <div class="alts-container" id="alts-list-container">
+            <!-- Javascript populated list of alts -->
+          </div>
+          <!-- Add alt form inline -->
+          <div class="add-alt-row">
+            <input type="text" id="add-alt-name" class="form-control" placeholder="Alt Character Name" style="flex-grow:1; font-size:0.85rem; padding:0.4rem 0.75rem;">
+            <button class="btn btn-sm btn-primary" id="btn-add-alt">Link Alt</button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" id="btn-delete-player" style="border-color:rgba(239,68,68,0.2); color:var(--accent-danger); margin-right:auto;">Delete Player</button>
+        <button class="btn" onclick="closeModal('modal-player-details')">Cancel</button>
+        <button class="btn btn-primary" id="btn-save-player-details">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MODAL: ADD MEMBER MANUALLY
+       ========================================== -->
+  <div id="modal-add-member" class="modal-overlay">
+    <div class="modal-content" style="max-width:460px;">
+      <div class="modal-header">
+        <h2>Add Player Main</h2>
+        <button class="close-btn">&times;</button>
+      </div>
+      <form id="add-member-form">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="add-member-name">Main Character Name (Required)</label>
+            <input type="text" id="add-member-name" class="form-control" placeholder="e.g. Belwyn" required>
+            <span style="font-size:0.72rem; color:var(--text-dim);">Used to query the Daybreak Games Census database.</span>
+          </div>
+
+          <div class="grid-cols-2" style="gap:0.75rem;">
+            <div class="form-group">
+              <label for="add-member-dkp">Starting DKP</label>
+              <input type="number" id="add-member-dkp" class="form-control" value="0" min="0">
+            </div>
+            <div class="form-group">
+              <label for="add-member-team">Raid Team</label>
+              <select id="add-member-team" class="form-control form-select">
+                <option value="Unassigned">Unassigned</option>
+                <option value="Mon/Tues">Mon/Tues Team</option>
+                <option value="Wed/Thu">Wed/Thu Team</option>
+                <option value="Backup">Backup Team</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="add-member-availability">Availability Days (Comma-separated)</label>
+            <input type="text" id="add-member-availability" class="form-control" placeholder="e.g. Mon/Tues, Wed/Thu">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn" onclick="closeModal('modal-add-member')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Create Profile</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Core App JS link -->
+  <script src="app.js"></script>
+</body>
+</html>
