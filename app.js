@@ -92,6 +92,7 @@ let state = {
   lootLog: [],
   serviceId: "sukiecrisp",
   serverName: "Wuoshi",
+  settings: {},
   activeView: "dashboard",
   editingPlayerId: null
 };
@@ -1332,7 +1333,7 @@ function renderLootHistory() {
 function exportRosterJSON() {
   const exportData = {
     exportedAt: new Date().toISOString(),
-    app: "CAB Guild Manager",
+    app: "CAB DKP",
     players: state.players,
     attendanceLog: state.attendanceLog || [],
     lootLog: state.lootLog || [],
