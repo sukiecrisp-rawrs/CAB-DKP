@@ -5,7 +5,7 @@
 
 // Initial Seed Data from Google Sheet
 const SEED_ROSTER = [
-  { PlayerID: "Ajurk", DKP: 0, Sorts: "Wed/Thu", Attendance: 0.0 },
+  { PlayerID: "Ajurk", DKP: 0, Sorts: "Wed/Thu", Attendance: 0.0 Characters: [], },
   { PlayerID: "Alpha", DKP: 30, Sorts: "Wed/Thu", Attendance: 0.0 },
   { PlayerID: "Anonymous", DKP: 0, Sorts: "", Attendance: 0.0 },
   { PlayerID: "Artisan", DKP: 4, Sorts: "Wed/Thu", Attendance: 0.0 },
@@ -173,8 +173,8 @@ function initApp() {
     });
   });
 
-  // Add Member Dialog Form Handler
-  document.getElementById("add-member-form")?.addEventListener("submit", handleAddMemberSubmit);
+  // Add Player Dialog Form Handler
+  document.getElementById("add-member-form")?.addEventListener("submit", handleAddPlayerSubmit);
   document.getElementById("btn-open-add-member")?.addEventListener("click", () => openModal("modal-add-member"));
   document.getElementById("btn-sync-all-dash")?.addEventListener("click", syncAllRoster);
   document.getElementById("attendance-form")?.addEventListener("submit", handleAttendanceSubmit);
@@ -870,7 +870,7 @@ function handleAddMemberSubmit(e) {
     status: "Active",
     dkp: dkpVal,
     sorts: availability,
-    attendance: 0.0,
+    Attendance: 0.0,
     raidTeam: teamVal,
     notes: "",
     mainCharacter: {
